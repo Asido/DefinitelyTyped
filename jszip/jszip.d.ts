@@ -1,183 +1,222 @@
 // Type definitions for JSZip
 // Project: http://stuk.github.com/jszip/
 // Definitions by: mzeiher <https://github.com/mzeiher>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-declare module jszip {
-    export interface JSZip {
-        /**
-         * Get a file from the archive
-         *
-         * @param path {string} relative path to file
-         *
-         * @return {JSZipFile} file matching path, null if no file found
-         */
-        file(path: string): JSZipFile;
+interface JSZip {
+    files: {[key: string]: JSZipObject};
 
-        /**
-         * Get files matching a RegExp from archive
-         *
-         * @param path {RegExp} RegExp to match
-         *
-         * @return {JSZipFile[]} return all matching files or an empty array
-         */
-        file(path: RegExp): JSZipFile[];
+    /**
+     * Get a file from the archive
+     *
+     * @param Path relative path to file
+     * @return File matching path, null if no file found
+     */
+    file(path: string): JSZipObject;
 
-        /**
-         * Add a file to the archive
-         *
-         * @param path {string} relative path to file
-         * @param content {any} content of the file
-         * @param options {JSZipOptions} optional information about the file
-         *
-         * @return {JSZip} JSZip object
-         */
-        file(path: string, content: any, options?: JSZipOptions): JSZip;
+    /**
+     * Get files matching a RegExp from archive
+     *
+     * @param path RegExp to match
+     * @return Return all matching files or an empty array
+     */
+    file(path: RegExp): JSZipObject[];
 
-        /**
-         * Return an new JSZip instance with the given folder as root
-         * 
-         * @param name {string} name of the folder
-         *
-         * @return {JSZip} new JSZip object with the given folder as root or null
-         */
-        folder(name: string): JSZip;
+    /**
+     * Add a file to the archive
+     *
+     * @param path Relative path to file
+     * @param content Content of the file
+     * @param options Optional information about the file
+     * @return JSZip object
+     */
+    file(path: string, data: any, options?: JSZipFileOptions): JSZip;
 
-        /**
-         * Returns new JSZip instances with the matching folders as root
-         * 
-         * @param name {RegExp} RegExp to match
-         *
-         * @return {JSZipFile[]} new array of JSZipFile objects which match the RegExp
-         */
-        folder(name: RegExp): JSZipFile[];
+    /**
+     * Return an new JSZip instance with the given folder as root
+     *
+     * @param name Name of the folder
+     * @return New JSZip object with the given folder as root or null
+     */
+    folder(name: string): JSZip;
 
-        /**
-         * Removes the file or folder from the archive
-         * 
-         * @param path {string} relative path of file or folder
-         * 
-         * @return {JSZip} returns the JSZip instance
-         */
-        remove(path: string): JSZip;
+    /**
+     * Returns new JSZip instances with the matching folders as root
+     *
+     * @param name RegExp to match
+     * @return New array of JSZipFile objects which match the RegExp
+     */
+    folder(name: RegExp): JSZipObject[];
 
-        /**
-         * Generates a new archive
-         *
-         * @param options {JSZipGeneratorOptions} optional options for the generator
-         * 
-         * @return {any} the serialized archive
-         */
-        generate(options?: JSZipGeneratorOptions): any;
+    /**
+     * Call a callback function for each entry at this folder level.
+     *
+     * @param callback function
+     */
+    forEach(callback: (relativePath: string, file: JSZipObject) => void): void;
 
-        /**
-         * Deserialize zip file
-         *
-         * @param data {any} serialized zip file
-         * @param options {JSZipOptions} options for deserializing
-         *
-         * @return {JSZip} returns the JSZip instance
-         */
-        load(data: any, options: JSZipOptions): JSZip;
+    /**
+     * Get all files wchich match the given filter function
+     *
+     * @param predicate Filter function
+     * @return Array of matched elements
+     */
+    filter(predicate: (relativePath: string, file: JSZipObject) => boolean): JSZipObject[];
 
-        /**
-         * Get all files wchich match the given filter function
-         *
-         * @param {function} filter function
-         *
-         * @return {JSZipFile[]} array of matched elements
-         */
-        filter(predicate: (relativePath: string, file: JSZipFile) => boolean): JSZipFile[];
+    /**
+     * Removes the file or folder from the archive
+     *
+     * @param path Relative path of file or folder
+     * @return Returns the JSZip instance
+     */
+    remove(path: string): JSZip;
 
-        /**
-         * Calculate crc32 of given string
-         *
-         * @param data {string} string to calculate crc32 from
-         * @param crc {number} optional: initializer for crc calc
-         *
-         * @return {number} calculated crc32 number
-         */
-        crc32(data: string, crc?: number): number;
+    /**
+     * @deprecated since version 3.0
+     * @see {@link generateAsync}
+     * http://stuk.github.io/jszip/documentation/upgrade_guide.html
+     */
+    generate(options?: JSZipGeneratorOptions): any;
 
-        /**
-         * Clone JSSZip instance
-         *
-         * return {JSZip} cloned instsance
-         */
-        clone(): JSZip;
+    /**
+     * Generates a new archive asynchronously
+     *
+     * @param options Optional options for the generator
+     * @return The serialized archive
+     */
+    generateAsync(options?: JSZipGeneratorOptions, onUpdate?: Function): Promise<any>;
 
-        /**
-         * UTF8 encode a string
-         *
-         * @param data {string} string to encode
-         */
-        utf8encode(data: string): string;
+    /**
+     * @deprecated since version 3.0
+     * @see {@link loadAsync}
+     * http://stuk.github.io/jszip/documentation/upgrade_guide.html
+     */
+    load(): void;
 
-        /**
-         * UTF8 decode a string
-         *
-         * @param data {string} string to decode
-         */
-        utf8decode(data: string): string;
+    /**
+     * Deserialize zip file asynchronously
+     *
+     * @param data Serialized zip file
+     * @param options Options for deserializing
+     * @return Returns promise
+     */
+    loadAsync(data: any, options?: JSZipLoadOptions): Promise<JSZip>;
+}
 
-    }
+type Serialization = ("string" | "text" | "base64" | "binarystring" | "uint8array" |
+                      "arraybuffer" | "blob" | "nodebuffer");
 
-    export interface JSZipSupport {
-        arraybuffer: boolean;
-        uint8array: boolean;
-        blob: boolean;
-    }
+interface JSZipObject {
+    name: string;
+    dir: boolean;
+    date: Date;
+    comment: string;
+    options: JSZipObjectOptions;
 
-    export interface JSZipGeneratorOptions {
-        base64?: boolean; //deprecated
-        compression: string; //DEFLATE or STORE
-        type: string; //base64 (default), string, uint8array, blob
-    }
+    /**
+     * Prepare the content in the asked type.
+     * @param {String} type the type of the result.
+     * @param {Function} onUpdate a function to call on each internal update.
+     * @return Promise the promise of the result.
+     */
+    async(type: Serialization, onUpdate?: Function): Promise<any>;
 
-    export interface JSZipOptions {
-        base64: boolean;
-        checkCRC32: boolean;
-    }
+    /**
+     * @deprecated since version 3.0
+     */
+    asText(): void;
+    /**
+     * @deprecated since version 3.0
+     */
+    asBinary(): void;
+    /**
+     * @deprecated since version 3.0
+     */
+    asArrayBuffer(): void;
+    /**
+     * @deprecated since version 3.0
+     */
+    asUint8Array(): void;
+    //asNodeBuffer(): void;
+}
 
-    export interface JSZipFile {
-        name: string;
-        data: any;
-        options: JSZipFileOptions;
+interface JSZipFileOptions {
+    base64?: boolean;
+    binary?: boolean;
+    date?: Date;
+    compression?: string;
+    comment?: string;
+    optimizedBinaryString?: boolean;
+    createFolders?: boolean;
+}
 
-        asText(): string;
-        asBinary(): any;
-        asArrayBuffer(): ArrayBuffer;
-        asUint8Array(): Uint8Array;
-    }
+interface JSZipObjectOptions {
+    /** deprecated */
+    base64: boolean;
+    /** deprecated */
+    binary: boolean;
+    /** deprecated */
+    dir: boolean;
+    /** deprecated */
+    date: Date;
+    compression: string;
+}
 
-    export interface JSZipFileOptions {
-        base64: boolean;
-        binary: boolean;
-        dir: boolean;
-        date: Date;
-    }
+interface JSZipGeneratorOptions {
+    /** deprecated */
+    base64?: boolean;
+    /** DEFLATE or STORE */
+    compression?: string;
+    /** base64 (default), string, uint8array, blob */
+    type?: string;
+    comment?: string;
+}
 
-    export interface JSZipBase64 {
-    }
+interface JSZipLoadOptions {
+    base64?: boolean;
+    checkCRC32?: boolean;
+    optimizedBinaryString?: boolean;
+    createFolders?: boolean;
+}
+
+interface JSZipSupport {
+    arraybuffer: boolean;
+    uint8array: boolean;
+    blob: boolean;
+    nodebuffer: boolean;
 }
 
 declare var JSZip: {
     /**
      * Create JSZip instance
+     */
+    (): JSZip;
+    /**
+     * Create JSZip instance
      * If no parameters given an empty zip archive will be created
      *
-     * @param data {any} serialized zip archive
-     * @param options {JSZipOptions} description of the serialized zip archive
+     * @param data Serialized zip archive
+     * @param options Description of the serialized zip archive
      */
-	new(data?: any, options?: jszip.JSZipOptions): jszip.JSZip;
+    (data: any, options?: JSZipLoadOptions): JSZip;
 
-    prototype: jszip.JSZip;
-    support : jszip.JSZipSupport;
+    /**
+     * Create JSZip instance
+     */
+    new (): JSZip;
+    /**
+     * Create JSZip instance
+     * If no parameters given an empty zip archive will be created
+     *
+     * @param data Serialized zip archive
+     * @param options Description of the serialized zip archive
+     */
+    new (data: any, options?: JSZipLoadOptions): JSZip;
+
+    prototype: JSZip;
+    support: JSZipSupport;
 }
 
-declare var JSZipBase64: {
-    encode(input: string, utf8?: any): string;
-    decode(input: string, utf8?: any): string;
-
-    prototype: jszip.JSZipBase64;
+declare module "jszip" {
+    export = JSZip;
 }
