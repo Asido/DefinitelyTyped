@@ -1,9 +1,7 @@
-// Type definitions for Finite State Machine 2.2
+// Type definitions for Finite State Machine 2.3.5
 // Project: https://github.com/jakesgordon/javascript-state-machine
-// Definitions by: Boris Yankov <https://github.com/borisyankov/>
-// Definitions by: Maarten Docter <https://github.com/mdocter> (2013/01/22)
-// Definitions by: William Sears <https://github.com/MrBigDog2U> (2013/01/25)
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Definitions by: Boris Yankov <https://github.com/borisyankov/>, Maarten Docter <https://github.com/mdocter>, William Sears <https://github.com/MrBigDog2U>, samael <https://github.com/samael65535>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 interface StateMachineErrorCallback {
     (eventName?: string, from?: string, to?: string, args?: any[], errorCode?: number, errorMessage?: string, ex?: Error): void; // NB. errorCode? See: StateMachine.Error
@@ -29,9 +27,13 @@ interface StateMachineConfig {
     error?: StateMachineErrorCallback;
 }
 
+interface StateMachineIsFinished {
+    (state: string): boolean;
+}
+
 interface StateMachineStatic {
 
-    VERSION: string; 		        // = "2.2.0"
+    VERSION: string; 		        // = "2.3.5"
     WILDCARD: string;		        // = '*'
     ASYNC: string;			        // = 'async'   
 
@@ -39,7 +41,7 @@ interface StateMachineStatic {
         SUCCEEDED: number;	        // = 1, the event transitioned successfully from one state to another
         NOTRANSITION: number;	    // = 2, the event was successfull but no state transition was necessary
         CANCELLED: number;	        // = 3, the event was cancelled by the caller in a beforeEvent callback
-        ASYNC: number;		        // = 4, the event is asynchronous and the caller is in control of when the transition occurs
+        PENDING: number;		        // = 4, the event is asynchronous and the caller is in control of when the transition occurs
     };
 
     Error: {
@@ -70,7 +72,7 @@ interface StateMachine {
     can: StateMachineCan;
     cannot: StateMachineCan;
     error: StateMachineErrorCallback;
-
+	isFinished: StateMachineIsFinished;
     /*  transition - only available when performing async state transitions; otherwise null. Can be a: 
         [1] fsm.transition(); // called from async callback
         [2] fsm.transition.cancel(); 
@@ -79,3 +81,7 @@ interface StateMachine {
 }
 
 declare var StateMachine: StateMachineStatic;
+
+declare module "state-machine" { 
+    export = StateMachine; 
+}
