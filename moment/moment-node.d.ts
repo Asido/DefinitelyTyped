@@ -684,10 +684,10 @@ declare namespace moment {
 
 declare module 'moment' {
     var moment: moment.MomentStatic;
-    export = moment;
+    export default moment;
 }
 
 declare module 'moment/moment' {
     var moment: moment.MomentStatic;
-    export = moment;
+    export default moment;
 }
