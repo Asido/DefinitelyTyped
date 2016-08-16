@@ -325,8 +325,6 @@ interface PDFJSStatic {
 		: PDFPromise<PDFDocumentProxy>;
 }
 
-declare var PDFJS: PDFJSStatic;
-
 declare module "PDFJS" {
-	export = PDFJS;
+	export var PDFJS: PDFJSStatic;
 }
