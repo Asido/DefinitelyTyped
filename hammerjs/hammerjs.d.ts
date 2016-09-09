@@ -6,7 +6,7 @@
 declare var Hammer:HammerStatic;
 
 declare module "hammerjs" {
-    export = Hammer;
+    export default Hammer;
 }
 
 interface HammerStatic
